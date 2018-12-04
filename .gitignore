@@ -1,3 +1,7 @@
+# Eclipse
+*.project
+*.cproject
+
 # Prerequisites
 *.d
 
