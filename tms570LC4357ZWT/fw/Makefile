@@ -15,7 +15,7 @@ comma=,
 AS:=$(CROSS_COMPILE)as
 CC:=$(CROSS_COMPILE)gcc
 LD:=$(CROSS_COMPILE)ld
-
+OBJCOPY:=$(CROSS_COMPILE)objcopy
 
 
 LD_LIBRARIES:=c m gcc
@@ -24,31 +24,34 @@ LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
 LD_LIBRARY_PATH:=/home/ioptest/diplomski/newlib-3.0.0/arm-none-eabi/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
 LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
-SRC_DIR:=source
+SRC_DIR:=src
 BUILD_DIR:=build
 
 
-CSRC:=$(wildcard source/*.c)
-CSRC+=$(wildcard mutters/src/*.c)
-ASMSRC:=$(wildcard source/*.s)
+CSRC:=$(wildcard src/*.c)
 
 OBJS:=$(CSRC:.c=.o)
-OBJS+=$(ASMSRC:.s=.o)
-OBJS:=$(subst source, build, $(OBJS))
-OBJS:=$(subst mutters/src, build, $(OBJS))
+OBJS:=$(subst src, build, $(OBJS))
 
 .PHONY: all prebuild fw
 
 CINC:=$(addprefix -I, $(CINC))
 ASINC:=$(addprefix -I, $(ASINC))
 
-all: fw $(OBJS)
-	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) --start-group $(LD_LIBRARIES) --end-group -Tsource/HL_sys_link.ld -o build/hal.out $(OBJS)
-prebuild:
-	$(VERBOSE)mkdir -p $(BUILD_DIR) 
+FW:=build/fw.bin
+ELF:=build/fw.out
 
-fw:
-	$(MAKE) --directory fw
+all: $(FW)
+
+$(FW): $(ELF)
+	$(OBJCOPY) -Obinary $(ELF) $(FW)
+
+$(ELF): $(OBJS)
+	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) --start-group $(LD_LIBRARIES) --end-group -Tsrc/fw.ld -o $(ELF) $(OBJS)
+
+prebuild:
+	@echo "Buildnig FW..."
+	$(VERBOSE)mkdir -p $(BUILD_DIR) 
 
 $(OBJS): prebuild
 

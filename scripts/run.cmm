@@ -1,0 +1,137 @@
+;
+; This script is for ARGOBOARD.
+;
+; Purpose:
+;   - Setup of TMS570LS313x internal flash
+;   - Setup GUI for debugging
+;
+; HINTS:
+;
+;   Flash programming algorithm is linked to address 0x08000000 and is not
+;   position independent. Code address of FLASH.TARGET command has not be
+;   changed.
+;
+; Revision:
+;   14-Feb-2012 (SZU) creation
+;   04-Jul-2017 (y62) adapted to SMC2 bootloader
+;
+
+GLOBAL &imageName
+GLOBAL &imagePath
+GLOBAL &appInit
+
+&imageName="hal.out"
+&imagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\build"
+&srcFolder="D:\Diplomski\MUTTERS-Bootloader\"
+&fwImagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw\build"
+&fwImageName="fw.out"
+&appInit=0x00010000
+
+;========================================================================
+; Setup CPU
+SYStem.RESet
+; IMPORTANT: For use with TI HERCULES evaluation board resbreak must be set to 
+;            OFF.
+; Reason: On this evaluation board is the the JTEG reset pin connected with the 
+;         power on reset, but it should be connected with the warm reset pin of
+;         the TMS570.
+system.option.resbreak ON
+SYStem.CPU TMS570LC4357
+ETM.OFF
+SYStem.Option.EnReset OFF
+
+system.config TPIU BASE DAP:0xFFA03000
+system.config ETM BASE  DAP:0xFFA02000
+
+
+;SYStem.CONFIG DAPIRPOST 8.
+;SYStem.CONFIG DAPIRPRE  8.
+;SYStem.CONFIG DAPDRPOST 1.
+;SYStem.CONFIG DAPDRPRE 2.
+
+SYStem.Up
+
+;========================================================================
+; Flash declaration
+
+FLASH.RESet
+; Program flash
+FLASH.Create 1. 0x00000000--(&appInit-1)  0x8000 TARGET Byte 0. ; Bank 0
+FLASH.Create 2. &appInit--(&appInit*2-1)  0x8000 TARGET Byte 0. ; Bank 0
+
+; Use flashfile with Auto ECC
+    FLASH.TARGET 0x08000000 0x08002000 0x4000 ~~/demo/arm/flash/byte_be/f021r4l2fmc.bin
+FLASH.CLocK auto
+
+;========================================================================
+; Flash programming example
+
+DIALOG.YESNO "Program flash memory?"
+LOCAL &progflash
+ENTRY &progflash
+
+IF &progflash 
+(
+    FLASH.ReProgram ALL /Erase
+    Data.LOAD.elf &imagePath\&imageName /NosYmbol
+	Data.LOAD.elf &fwImagePath\&fwImageName /NosYmbol
+    FLASH.ReProgram off
+    Print "Application flashed..."
+)
+
+Data.LOAD.auto &imagePath\&imageName /NoCode /NoClear
+;========================================================================
+
+sYmbol.sourcepath.reset                                 ; Reset search path configuration
+symbol.SOURCEPATH.SETRECURSEDIR &srcFolder              ; Define recursive direct search path
+
+
+; setup window configuration
+
+DIALOG.YESNO "Reset windows?"                           ; Ask user, if he wants to program the flash memory
+LOCAL &resetWin
+ENTRY &resetWin                                         ; Pass answer from dialog box to progflash
+
+IF &resetWin                                            ; Execute following commands dependant on user's decision
+(
+ TOOLBAR ON
+ STATUSBAR ON
+ FRAMEPOS 16.5,8.25,,,Maximized                         ; Controls the position of TRACE32 in MDI window mode
+ WINPAGE.RESET                                          ; Reset window system
+    
+ WINCLEAR                                               ; Erase windows
+ WINPOS 127.25 0.0 53. 40. 0. 1. W002                   ; Set window dimensions
+ WINTABS 21. 21.                                        ; Define TABs
+ sYmbol.Browse.Function                                 ; Browse functions
+    
+ WINPOS 0.0 43.625 124. 6. 23. 1. W003                  ; Set window dimensions
+ WINTABS 0. 16. 0. 0. 0. 0. 0.                          ; Define TABs
+ Break.List                                             ; Display list of breakpoints
+ 
+ WINPOS 183.75 0.0625 52. 41. 0. 0. W001                ; Set window dimensions
+ Register                                               ; Processor registers
+ 
+ WINPOS 127.75 44.5 108. 5. 0. 0. W004                  ; Set window dimensions
+ ; Open 'Var.Watch' window
+ Var.Watch                                              
+ 
+ WINPOS 0.125 0.0625 123. 39. 13. 1. W000               ; Set window dimensions
+ WINTABS 10. 10. 25. 62.                                ; Define TABs
+ Data.List                                              ; Open Source Code window
+        
+ WINPAGE.SELECT P000                                    ; Select page
+) 
+
+
+
+; use onchip breakpoints
+map.bonchip
+
+; Set format of data values to hex
+setup.var %HEX  
+  
+;======================
+;===  end of script ===
+;======================
+
+ENDDO

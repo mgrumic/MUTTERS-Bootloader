@@ -61,14 +61,13 @@
 */
 
 /* USER CODE BEGIN (2) */
+extern int mutters_bl_init();
 /* USER CODE END */
-
-uint8	emacAddress[6U] = 	{0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU, 0xFFU};
-uint32 	emacPhyAddress	=	1U;
 
 int main(void)
 {
 /* USER CODE BEGIN (3) */
+	mutters_bl_init();
 /* USER CODE END */
 
     return 0;

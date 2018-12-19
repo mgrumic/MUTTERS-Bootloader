@@ -46,10 +46,6 @@
 @ import reference for interrupt routines
 
     .extern _c_int00
-    .extern _undef
-    .extern _svc
-    .extern _prefetch
-    .extern _dabort
     .extern phantomInterrupt
     .weak resetEntry
 
@@ -58,10 +54,14 @@
 
 resetEntry:
         b   _c_int00
-        b   _undef
-        b   _svc
-        b   _prefetch
-        b   _dabort
+undefEntry:
+        b   undefEntry
+svcEntry:
+        b   svcEntry
+prefetchEntry:
+        b   prefetchEntry
+dataEntry:
+        b   dataEntry
         b   phantomInterrupt
         ldr pc,[pc,#-0x1b0]
         ldr pc,[pc,#-0x1b0]

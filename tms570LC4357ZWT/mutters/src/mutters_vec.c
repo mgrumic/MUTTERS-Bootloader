@@ -5,21 +5,22 @@
  *      Author: mgrumic
  */
 
-void _undef (void) {
-	while(1);
-}
 
-void _svc (void) {
-	while(1);
-}
+//void _undef (void) {
+//	while(1);
+//}
 
-void _prefetch (void) {
-	while(1);
-}
-
-void _dabort (void) {
-	while(1);
-}
+//void _svc (void) {
+//	while(1);
+//}
+//
+//void _prefetch (void) {
+//	while(1);
+//}
+//
+//void _dabort (void) {
+//	while(1);
+//}
 
 void _exit (int x) {
 	(void) x;
