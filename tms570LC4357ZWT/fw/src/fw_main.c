@@ -1,8 +1,9 @@
-
-volatile int x = 0xEC11EC11;
-
+#include "common.h"
+#include "serial.h"
 
 int fw_main() {
-	while(x);
-	return 1;
+	while(1) {
+		uart_send((uint8_t*) "Hello from FW!!!\r\n");
+	}
+	return 0;
 }

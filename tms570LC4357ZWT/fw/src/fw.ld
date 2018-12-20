@@ -5,7 +5,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* Entry Point */
-ENTRY(fw_main)
+ENTRY(_c_int00)
 /* Highest address of the stack */
 MEMORY
 {
@@ -85,7 +85,7 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } > FLASH
+  } >RAM AT> FLASH
 
   /* Uninitialized data section */
   . = ALIGN(4);
@@ -101,7 +101,7 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
-  } > FLASH
+  } > RAM
 
   PROVIDE ( end = _ebss );
   PROVIDE ( _end = _ebss );

@@ -1,7 +1,8 @@
 CROSS_COMPILE ?= arm-none-eabi-
 TARGET ?= arm
 
-CINC:=include/
+CINC:=include/ hal/include/ hal/include/$(TARGET_PLATFORM)/
+
 ASINC:=include/
 
 CFLAGS:=-mbig-endian -Wall -Werror -mhard-float -march=armv7-r -mcpu=cortex-r4f \
@@ -25,13 +26,20 @@ LD_LIBRARY_PATH:=/home/ioptest/diplomski/newlib-3.0.0/arm-none-eabi/newlib /usr/
 LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=src
+HAL_SRC_DIR:=hal/src/$(TARGET_PLATFORM)
 BUILD_DIR:=build
 
 
-CSRC:=$(wildcard src/*.c)
+CSRC:=$(wildcard $(SRC_DIR)/*.c)
+CSRC:=$(CSRC) $(wildcard $(HAL_SRC_DIR)/*.c)
+
+ASMSRC:=$(wildcard $(HAL_SRC_DIR)/*.s)
 
 OBJS:=$(CSRC:.c=.o)
+OBJS:=$(OBJS) $(ASMSRC:.s=.o)
+OBJS:=$(subst hal/src/$(TARGET_PLATFORM), build, $(OBJS))
 OBJS:=$(subst src, build, $(OBJS))
+
 
 .PHONY: all prebuild fw
 
@@ -58,9 +66,9 @@ $(OBJS): prebuild
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $< $(CINC) -o $@
 
-$(BUILD_DIR)/%.o: mutters/src/%.c
+$(BUILD_DIR)/%.o: hal/src/$(TARGET_PLATFORM)/%.c
 	$(CC) $(CFLAGS) $< $(CINC) -o $@
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
+$(BUILD_DIR)/%.o: hal/src/$(TARGET_PLATFORM)/%.s
 	$(AS) $(ASFLAGS) $< $(ASINC) -o $@
 

@@ -22,7 +22,7 @@ GLOBAL &appInit
 
 &imageName="hal.out"
 &imagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\build"
-&srcFolder="D:\Diplomski\MUTTERS-Bootloader\"
+&srcFolder="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw"
 &fwImagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw\build"
 &fwImageName="fw.out"
 &appInit=0x00010000
@@ -56,8 +56,8 @@ SYStem.Up
 
 FLASH.RESet
 ; Program flash
-FLASH.Create 1. 0x00000000--(&appInit-1)  0x8000 TARGET Byte 0. ; Bank 0
-FLASH.Create 2. &appInit--(&appInit*2-1)  0x8000 TARGET Byte 0. ; Bank 0
+FLASH.Create 1. 0x00000000--(&appInit-1)  0x4000 TARGET Byte 0. ; Bank 0
+FLASH.Create 2. 0x10000--(0x1FFFF)  0x4000 TARGET Byte 0. ; Bank 0
 
 ; Use flashfile with Auto ECC
     FLASH.TARGET 0x08000000 0x08002000 0x4000 ~~/demo/arm/flash/byte_be/f021r4l2fmc.bin
@@ -72,6 +72,7 @@ ENTRY &progflash
 
 IF &progflash 
 (
+	FLASH.UnLock ALL
     FLASH.ReProgram ALL /Erase
     Data.LOAD.elf &imagePath\&imageName /NosYmbol
 	Data.LOAD.elf &fwImagePath\&fwImageName /NosYmbol
