@@ -206,7 +206,7 @@ void sciSetBaudrate(sciBASE_t *sci, uint32 baud)
     /*SAFETYMCUSW 96 S MR:6.1 <APPROVED> "Calculations including int and float cannot be avoided" */
 	temp = (f*(baud));
 	temp2 = ((vclk)/((float64)temp))-1U;
-	temp2 = (temp2 + 0.5);        /* Rounding-off to the closest integer */
+	temp2 = (temp2 + 0.5);        /* Rounding-off to the closest integer */ /* GRUMA DELETED floor */
 	sci->BRS = (uint32)((uint32)temp2 & 0x00FFFFFFU);
 
 /* USER CODE BEGIN (7) */

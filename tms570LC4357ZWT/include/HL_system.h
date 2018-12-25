@@ -474,7 +474,7 @@ void periphInit(void);
 void mapClocks(void);
 void systemInit(void);
 void systemPowerDown(uint32 mode);
-resetSource_t getResetSource(void) __attribute__((naked));
+resetSource_t getResetSource(void); // GRUMA ZAKOMENTARISAO __attribute__((naked));
 
 
 

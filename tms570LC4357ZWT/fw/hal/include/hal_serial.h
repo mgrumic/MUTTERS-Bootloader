@@ -6,4 +6,6 @@
 
 extern MUT_Error hal_uart_send(uint8_t* message);
 
+extern MUT_Error hal_uart_init(void);
+
 #endif // __HAL_SERIAL_H

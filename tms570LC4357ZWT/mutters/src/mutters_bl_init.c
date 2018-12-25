@@ -25,7 +25,7 @@ void uart_send(char* message) {
 
 typedef void (*fw_start_t)(void);
 
-fw_start_t fw_start = (fw_start_t) 0x13a34;
+fw_start_t fw_start = (fw_start_t) 0x10000;
 
 int mutters_bl_init() {
 	char* message = "Starting FW...\r\n";

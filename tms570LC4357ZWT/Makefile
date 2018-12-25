@@ -5,7 +5,7 @@ CINC:=include/
 ASINC:=include/
 
 CFLAGS:=-mbig-endian -Wall -Werror -mhard-float -march=armv7-r -mcpu=cortex-r4f \
-	-fomit-frame-pointer -fno-strict-aliasing -nostdlib -O0 -g -c
+	-fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib -O0 -g -c
 ASFLAGS:=-mbig-endian -mfpu=fpv4-sp-d16 -march=armv7-r -mcpu=cortex-r4f -g -c
 LDFLAGS:=-nostdlib -EB --gc-section
 

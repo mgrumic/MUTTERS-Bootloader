@@ -1,12 +1,12 @@
 CROSS_COMPILE ?= arm-none-eabi-
 TARGET ?= arm
 
-CINC:=include/ hal/include/ hal/include/$(TARGET_PLATFORM)/
+CINC:=include/ hal/include/ hal/$(TARGET_PLATFORM)/include
 
 ASINC:=include/
 
 CFLAGS:=-mbig-endian -Wall -Werror -mhard-float -march=armv7-r -mcpu=cortex-r4f \
-	-fomit-frame-pointer -fno-strict-aliasing -nostdlib -O0 -g -c
+	-fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib -g -c
 ASFLAGS:=-mbig-endian -mfpu=fpv4-sp-d16 -march=armv7-r -mcpu=cortex-r4f -g -c
 LDFLAGS:=-nostdlib -EB --gc-section
 
@@ -27,19 +27,21 @@ LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=src
 HAL_SRC_DIR:=hal/src/$(TARGET_PLATFORM)
+HAL_TARGET_SRC_DIR:=hal/$(TARGET_PLATFORM)/source
 BUILD_DIR:=build
 
 
 CSRC:=$(wildcard $(SRC_DIR)/*.c)
 CSRC:=$(CSRC) $(wildcard $(HAL_SRC_DIR)/*.c)
+CSRC:=$(CSRC) $(wildcard $(HAL_TARGET_SRC_DIR)/*.c)
 
-ASMSRC:=$(wildcard $(HAL_SRC_DIR)/*.s)
+ASMSRC:=$(wildcard $(HAL_TARGET_SRC_DIR)/*.s)
 
 OBJS:=$(CSRC:.c=.o)
 OBJS:=$(OBJS) $(ASMSRC:.s=.o)
-OBJS:=$(subst hal/src/$(TARGET_PLATFORM), build, $(OBJS))
-OBJS:=$(subst src, build, $(OBJS))
-
+OBJS:=$(subst $(HAL_SRC_DIR), build, $(OBJS))
+OBJS:=$(subst $(HAL_TARGET_SRC_DIR), build, $(OBJS))
+OBJS:=$(subst $(SRC_DIR), build, $(OBJS))
 
 .PHONY: all prebuild fw
 
@@ -63,12 +65,15 @@ prebuild:
 
 $(OBJS): prebuild
 
+$(BUILD_DIR)/%.o: $(HAL_TARGET_SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< $(CINC) -o $@
+
+$(BUILD_DIR)/%.o: $(HAL_SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< $(CINC) -o $@
+
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $< $(CINC) -o $@
 
-$(BUILD_DIR)/%.o: hal/src/$(TARGET_PLATFORM)/%.c
-	$(CC) $(CFLAGS) $< $(CINC) -o $@
-
-$(BUILD_DIR)/%.o: hal/src/$(TARGET_PLATFORM)/%.s
+$(BUILD_DIR)/%.o: $(HAL_TARGET_SRC_DIR)/%.s
 	$(AS) $(ASFLAGS) $< $(ASINC) -o $@
 

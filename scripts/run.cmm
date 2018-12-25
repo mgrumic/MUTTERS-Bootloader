@@ -25,6 +25,7 @@ GLOBAL &appInit
 &srcFolder="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw"
 &fwImagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw\build"
 &fwImageName="fw.out"
+&fwBinaryName="fw.bin"
 &appInit=0x00010000
 
 ;========================================================================
@@ -72,15 +73,15 @@ ENTRY &progflash
 
 IF &progflash 
 (
-	FLASH.UnLock ALL
     FLASH.ReProgram ALL /Erase
     Data.LOAD.elf &imagePath\&imageName /NosYmbol
-	Data.LOAD.elf &fwImagePath\&fwImageName /NosYmbol
+	Data.LOAD.elf &fwImagePath\&fwImageName
     FLASH.ReProgram off
     Print "Application flashed..."
 )
 
 Data.LOAD.auto &imagePath\&imageName /NoCode /NoClear
+Data.LOAD.auto &fwImagePath\&fwImageName /NoCode /NoClear
 ;========================================================================
 
 sYmbol.sourcepath.reset                                 ; Reset search path configuration

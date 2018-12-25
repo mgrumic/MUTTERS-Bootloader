@@ -81,6 +81,7 @@ extern void exit(int _status);
 /* Startup Routine */
 void _c_int00(void) __attribute__((noreturn));
 /* USER CODE BEGIN (4) */
+__attribute__ ((section(".mutters")))
 /* USER CODE END */
 
 __attribute__ ((naked))

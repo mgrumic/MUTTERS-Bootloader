@@ -67,7 +67,7 @@ extern int fw_main();
 int main(void)
 {
 /* USER CODE BEGIN (3) */
-	 	fw_main();
+	fw_main();
 /* USER CODE END */
 
     return 0;

@@ -1,15 +1,23 @@
 /*----------------------------------------------------------------------------*/
 /* sys_link.ld                                                              */
 /*                                                                            */
-/* (c) MG Instruments 2018, All rights reserved.                      */
+/* (c) Texas Instruments 2009-2013, All rights reserved.                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* Entry Point */
 ENTRY(_c_int00)
+
 /* Highest address of the stack */
+_estack = 0x8040000;    /* end of 256K RAM */
+
+/* Generate a link error if heap and stack don't fit into RAM */
+_Min_Heap_Size = 0x400;      /* required amount of heap  */
+
+/* Specify the memory areas */
 MEMORY
 {
-  FLASH  (rx)     : ORIGIN = 0x00010000, LENGTH = (0x001FFFE0 + 0x00200000)
+  VECTORS(rx)     : ORIGIN = 0x00000000, LENGTH = 0x00000020
+  FLASH  (rx)     : ORIGIN = 0x00000020, LENGTH = (0x001FFFE0 + 0x00200000)
   CPU_STACK (rw)  : ORIGIN = 0x08000000, LENGTH = 0x00001500 /* Stack is configured in sys_core.asm */
   RAM (xrw)       : ORIGIN = 0x08001500, LENGTH = 0x0007EB00
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
@@ -18,11 +26,18 @@ MEMORY
 /* Define output sections */
 SECTIONS
 {
-	/* The program code and other data goes into RAM */
+  /* The ISR vector goes first into RAM */
+  .intvecs :
+  {
+    . = ALIGN(4);
+    KEEP(*(.intvecs)) /* ISR vector */
+    . = ALIGN(4);
+  } >VECTORS
+
+  /* The program code and other data goes into RAM */
   .text :
   {
     . = ALIGN(4);
-	*(.mutters)
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.glue_7)         /* glue arm to thumb code */
@@ -34,7 +49,7 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
-  } > FLASH
+  } >FLASH
 
   /* Constant data goes into RAM */
   .rodata :
@@ -64,14 +79,14 @@ SECTIONS
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
-  } > FLASH
+  } >FLASH
   .fini_array :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
     KEEP (*(SORT(.fini_array.*)))
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
-  } > FLASH
+  } >FLASH
 
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
@@ -102,7 +117,7 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
-  } > RAM
+  } >RAM
 
   PROVIDE ( end = _ebss );
   PROVIDE ( _end = _ebss );

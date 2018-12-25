@@ -5,7 +5,7 @@
 
 static uint8_t uart_initialized = 0;
 
-MUT_Error uart_init() {
+MUT_Error hal_uart_init() {
 	sciInit();
 	uart_initialized = 1;
 	return MUT_NO_ERROR;
@@ -29,9 +29,14 @@ MUT_Error hal_uart_send(uint8_t* message) {
 	if (uart_initialized == 0) {
 		ret = MUT_ERROR;
 	}
-	sz = strlen(message);
-	if (ret == MUT_NO_ERROR && sz != 0) {
-		sciSend(sciREG1, sz, message);
+
+	if (ret == MUT_NO_ERROR) {
+		sz = strlen(message);
+		if (sz > 0) {
+			sciSend(sciREG1, sz, message);
+		} else {
+			ret = MUT_ERROR;
+		}
 	} else {
 		ret = MUT_ERROR;
 	}
