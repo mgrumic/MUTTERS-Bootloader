@@ -21,7 +21,7 @@ LD:=$(CROSS_COMPILE)ld
 LD_LIBRARIES:=c m gcc
 LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
 
-LD_LIBRARY_PATH:=/home/ioptest/diplomski/newlib-3.0.0/arm-none-eabi/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
+LD_LIBRARY_PATH:=/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
 LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=source
