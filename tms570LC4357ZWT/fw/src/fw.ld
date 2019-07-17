@@ -5,7 +5,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /* Entry Point */
-ENTRY(_c_int00)
+ENTRY(fw_main)
 /* Highest address of the stack */
 MEMORY
 {

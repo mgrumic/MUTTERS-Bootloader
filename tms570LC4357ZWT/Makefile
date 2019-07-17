@@ -1,3 +1,5 @@
+TARGET_PLATFORM ?= tms570
+
 CROSS_COMPILE ?= arm-none-eabi-
 TARGET ?= arm
 
@@ -18,10 +20,10 @@ LD:=$(CROSS_COMPILE)ld
 
 
 
-LD_LIBRARIES:=c m gcc
+LD_LIBRARIES:=gcc c m
 LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
 
-LD_LIBRARY_PATH:=/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
+LD_LIBRARY_PATH:=$(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
 LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=source
@@ -48,7 +50,7 @@ prebuild:
 	$(VERBOSE)mkdir -p $(BUILD_DIR) 
 
 fw:
-	$(MAKE) --directory fw
+	$(MAKE) --directory fw TARGET_PLATFORM=$(TARGET_PLATFORM)
 
 $(OBJS): prebuild
 

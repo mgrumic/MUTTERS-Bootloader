@@ -1,12 +1,12 @@
 /** @file HL_sci.c 
 *   @brief SCI Driver Implementation File
-*   @date 07-July-2017
-*   @version 04.07.00
+*   @date 11-Dec-2018
+*   @version 04.07.01
 *
 */
 
 /* 
-* Copyright (C) 2009-2016 Texas Instruments Incorporated - www.ti.com  
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
 * 
 * 
 *  Redistribution and use in source and binary forms, with or without 
@@ -206,7 +206,7 @@ void sciSetBaudrate(sciBASE_t *sci, uint32 baud)
     /*SAFETYMCUSW 96 S MR:6.1 <APPROVED> "Calculations including int and float cannot be avoided" */
 	temp = (f*(baud));
 	temp2 = ((vclk)/((float64)temp))-1U;
-	temp2 = (temp2 + 0.5);        /* Rounding-off to the closest integer */ /* GRUMA DELETED floor */
+	temp2 = floor(temp2 + 0.5);        /* Rounding-off to the closest integer */
 	sci->BRS = (uint32)((uint32)temp2 & 0x00FFFFFFU);
 
 /* USER CODE BEGIN (7) */

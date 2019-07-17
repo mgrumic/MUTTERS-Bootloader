@@ -1,7 +1,7 @@
 CROSS_COMPILE ?= arm-none-eabi-
 TARGET ?= arm
 
-CINC:=include/ hal/include/ hal/$(TARGET_PLATFORM)/include
+CINC:=include/ hal/include/ hal/$(TARGET_PLATFORM)/include ../F021/include
 
 ASINC:=include/
 
@@ -19,10 +19,10 @@ LD:=$(CROSS_COMPILE)ld
 OBJCOPY:=$(CROSS_COMPILE)objcopy
 
 
-LD_LIBRARIES:=c m gcc
+LD_LIBRARIES:=c m gcc :F021_API_CortexR4_BE_V3D16_NDS.lib
 LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
-
-LD_LIBRARY_PATH:=/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
+#/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/
+LD_LIBRARY_PATH:=$(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/ ../F021
 LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=src
@@ -57,7 +57,8 @@ $(FW): $(ELF)
 	$(OBJCOPY) -Obinary $(ELF) $(FW)
 
 $(ELF): $(OBJS)
-	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) --start-group $(LD_LIBRARIES) --end-group -Tsrc/fw.ld -o $(ELF) $(OBJS)
+	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) --start-group $(LD_LIBRARIES) --end-group -Tsrc/fw.ld -o $(ELF) $(OBJS) \
+		/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/F021/objs/FlashStateMachine.InitializeFlashBanks.obj
 
 prebuild:
 	@echo "Buildnig FW..."

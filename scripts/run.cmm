@@ -21,9 +21,9 @@ GLOBAL &imagePath
 GLOBAL &appInit
 
 &imageName="hal.out"
-&imagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\build"
-&srcFolder="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw"
-&fwImagePath="D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\fw\build"
+&imagePath="D:\Shared_VM\MUTTERS-Bootloader\tms570LC4357ZWT\build"
+&srcFolder="D:\Shared_VM\MUTTERS-Bootloader\tms570LC4357ZWT\fw"
+&fwImagePath="D:\Shared_VM\MUTTERS-Bootloader\tms570LC4357ZWT\fw\build"
 &fwImageName="fw.out"
 &fwBinaryName="fw.bin"
 &appInit=0x00010000
@@ -57,11 +57,14 @@ SYStem.Up
 
 FLASH.RESet
 ; Program flash
-FLASH.Create 1. 0x00000000--(&appInit-1)  0x4000 TARGET Byte 0. ; Bank 0
-FLASH.Create 2. 0x10000--(0x1FFFF)  0x4000 TARGET Byte 0. ; Bank 0
+FLASH.Create 1. 0x00000000--(0x0FFFF)  0x4000 TARGET Byte 0. ; Bank 0
+FLASH.Create 2. 0x10000--(0x17FFF)  0x4000 TARGET Byte 0. ; Bank 0
+FLASH.Create 2. 0x18000--(0x1FFFF)  0x8000 TARGET Byte 0. ; Bank 0
+
 
 ; Use flashfile with Auto ECC
-    FLASH.TARGET 0x08000000 0x08002000 0x4000 ~~/demo/arm/flash/byte_be/f021r4l2fmc.bin
+FLASH.TARGET 0x08000000 0x08002000 0x4000 ~~/demo/arm/flash/byte_be/f021r4l2fmc.bin
+
 FLASH.CLocK auto
 
 ;========================================================================
@@ -73,15 +76,16 @@ ENTRY &progflash
 
 IF &progflash 
 (
-    FLASH.ReProgram ALL /Erase
+	FLASH.ReProgram All
     Data.LOAD.elf &imagePath\&imageName /NosYmbol
-	Data.LOAD.elf &fwImagePath\&fwImageName
+    Data.LOAD.elf &fwImagePath\&fwImageName /NoSymbol
     FLASH.ReProgram off
     Print "Application flashed..."
 )
 
 Data.LOAD.auto &imagePath\&imageName /NoCode /NoClear
 Data.LOAD.auto &fwImagePath\&fwImageName /NoCode /NoClear
+
 ;========================================================================
 
 sYmbol.sourcepath.reset                                 ; Reset search path configuration
