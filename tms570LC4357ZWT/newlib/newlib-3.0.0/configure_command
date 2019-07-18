@@ -1,0 +1,1 @@
+./configure --target=arm-none-eabi CFLAGS_FOR_TARGET="-mbig-endian -mhard-float -march=armv7-r -mcpu=cortex-r4f -fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib" ASFLAGS_FOR_TARGET="-mbig-endian -mfpu=fpv4-sp-d16 -march=armv7-r -mcpu=cortex-r4f -g" LDFLAGS_FOR_TARGET="-nostdlib -EB --gc-section"

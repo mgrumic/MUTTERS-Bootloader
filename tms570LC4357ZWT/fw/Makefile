@@ -22,7 +22,8 @@ OBJCOPY:=$(CROSS_COMPILE)objcopy
 LD_LIBRARIES:=c m gcc :F021_API_CortexR4_BE_V3D16_NDS.lib
 LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
 #/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/
-LD_LIBRARY_PATH:=$(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/ ../F021
+LD_LIBRARY_PATH:=$(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libc /usr/lib/gcc/arm-none-eabi/6.3.1/ ../F021 \
+				 $(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm
 LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=src

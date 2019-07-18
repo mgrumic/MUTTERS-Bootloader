@@ -211,19 +211,19 @@ am__can_run_installinfo = \
 DATA = $(noinst_DATA)
 ETAGS = etags
 CTAGS = ctags
-ACLOCAL = ${SHELL} /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run aclocal-1.11
+ACLOCAL = ${SHELL} /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run aclocal-1.11
 AMTAR = $${TAR-tar}
 AR = arm-none-eabi-ar
 AS = arm-none-eabi-as
-AUTOCONF = ${SHELL} /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run automake-1.11
+AUTOCONF = ${SHELL} /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/missing --run automake-1.11
 AWK = gawk
-CC = arm-none-eabi-gcc -B/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/ -isystem /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/targ-include -isystem /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib/libc/include -B/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/arm -L/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/libnosys -L/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/libgloss/arm  -mfloat-abi=hard
-CCAS = arm-none-eabi-gcc -B/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/ -isystem /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/targ-include -isystem /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib/libc/include -B/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/arm -L/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/libnosys -L/home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/libgloss/arm  -mfloat-abi=hard
-CCASFLAGS = -g -O2
+CC = arm-none-eabi-gcc -B/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/ -isystem /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/targ-include -isystem /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib/libc/include -B/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/arm -L/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/libnosys -L/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/libgloss/arm  -mfloat-abi=hard
+CCAS = arm-none-eabi-gcc -B/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/ -isystem /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/targ-include -isystem /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/newlib/libc/include -B/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/arm -L/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/libgloss/libnosys -L/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/libgloss/arm  -mfloat-abi=hard
+CCASFLAGS = -mbig-endian -mhard-float -march=armv7-r -mcpu=cortex-r4f -fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -mbig-endian -mhard-float -march=armv7-r -mcpu=cortex-r4f -fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib
 CPP = 
 CPPFLAGS = 
 CYGPATH_W = echo
@@ -279,10 +279,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = arm-none-eabi-strip
 VERSION = 3.0.0
-abs_builddir = /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm/common
-abs_srcdir = /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm/../../../.././newlib/libm/common
-abs_top_builddir = /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm
-abs_top_srcdir = /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm/../../../.././newlib/libm
+abs_builddir = /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm/common
+abs_srcdir = /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm/../../../.././newlib/libm/common
+abs_top_builddir = /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm
+abs_top_srcdir = /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm/../../../.././newlib/libm
 ac_ct_CC = 
 ac_ct_DUMPBIN = 
 aext = a
@@ -311,7 +311,7 @@ host_vendor = none
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/grumic/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/install-sh
+install_sh = ${SHELL} /home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 libm_machine_dir = arm

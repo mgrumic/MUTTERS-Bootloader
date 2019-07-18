@@ -611,7 +611,3 @@ that you be precise about this.
 
 Archives of the newlib mailing list are on-line, see
 	http://sourceware.org/ml/newlib/
-
-GRUMA:
-
-CONFIGURE COMMAND FOR ARM BE: ./configure --build=arm-none-eabi --target=arm-none-eabi AS=arm-none-eabi-as CC=arm-none-eabi-gcc CFLAGS="-mbig-endian -mhard-float -march=armv7-r -mcpu=cortex-r4f -fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib" 

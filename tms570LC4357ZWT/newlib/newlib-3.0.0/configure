@@ -4412,8 +4412,10 @@ ac_clean_files="$ac_clean_files a.out a.out.dSYM a.exe b.out conftest.out"
 # of exeext.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for C compiler default output file name" >&5
 $as_echo_n "checking for C compiler default output file name... " >&6; }
-ac_link_default=`$as_echo "$ac_link" | sed 's/ -o *conftest[^ ]*//'`
+#ac_link_default=`$as_echo "$ac_link" | sed 's/ -o *conftest[^ ]*//'`
 
+ac_link_grumca='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS conftest.$ac_ext $LIBS >&5'
+ac_link_default=`$as_echo "$ac_link_grumca" | sed 's/ -o *conftest[^ ]*//'`
 # The possible output files:
 ac_files="a.out conftest.exe conftest a.exe a_out.exe b.out conftest.*"
 
@@ -15553,7 +15555,7 @@ do
   # Handling of the options.
   -recheck | --recheck | --rechec | --reche | --rech | --rec | --re | --r)
     ac_cs_recheck=: ;;
-  --version | --versio | --versi | --vers | --ver | --ve | --v)
+  --version | --versio | --versi | --vers | --ver | --ve | --v | -V )
     $as_echo "$ac_cs_version"; exit ;;
   --debug | --debu | --deb | --de | --d | -d )
     debug=: ;;
