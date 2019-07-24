@@ -240,7 +240,7 @@ boolean Fee_bSingleBitError;
 							TI_Fee_GlobalVariables[u8EEPIndex].Fee_au8BlockCopyStatus[TI_Fee_GlobalVariables[u8EEPIndex].Fee_u16ArrayIndex]= 0x01U;
 							/* Update Next write address */
 							TI_Fee_GlobalVariables[u8EEPIndex].Fee_oFlashNextAddress = TI_Fee_GlobalVariables[u8EEPIndex].Fee_u32nextCopyVSwriteaddress;									
-							TI_Fee_GlobalVariables[u8EEPIndex].Fee_oFlashNextAddress = TI_FeeInternal_AlignAddressForECC(TI_Fee_GlobalVariables[u8EEPIndex].Fee_oFlashNextAddress);
+							TI_Fee_GlobalVariables[u8EEPIndex].Fee_oFlashNextAddress = TI_FeeInternal_AlignAddressForECC(TI_Fee_GlobalVariables[u8EEPIndex].Fee_oFlashNextAddress);																	
 							/* Update the status to COPY. This will enable copying of all blocks from Active VS to Copy VS in background*/
 							TI_Fee_oStatusWord[u8EEPIndex].Fee_StatusWordType_ST.Copy = 1U;									
 						

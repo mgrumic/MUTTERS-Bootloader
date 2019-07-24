@@ -1,30 +1,55 @@
-CROSS_COMPILE ?= arm-none-eabi-
-TARGET ?= arm
+TARGET_PLATFORM ?= tms570
 
-CINC:=include/ hal/include/ hal/$(TARGET_PLATFORM)/include ../F021/include
+COMPILER_DIR := /opt/ti/arm
+
+CINC:=include/ hal/include/ hal/$(TARGET_PLATFORM)/include ../F021/include $(COMPILER_DIR)/include
 
 ASINC:=include/
 
-CFLAGS:=-mbig-endian -Wall -Werror -mhard-float -march=armv7-r -mcpu=cortex-r4f \
-	-fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib -g -c
-ASFLAGS:=-mbig-endian -mfpu=fpv4-sp-d16 -march=armv7-r -mcpu=cortex-r4f -g -c
-LDFLAGS:=-nostdlib -EB --gc-section
+CFLAGS := --abi=eabi \
+		  --auto_inline=0 \
+		  --endian=big \
+		  -mv7r4 \
+		  --float_support=VFPv3D16 \
+		  --wchar_t=16 \
+		  --plain_char=unsigned \
+		  --small_enum \
+		  --fp_mode=strict \
+		  --check_misra=none \
+		  --opt_level=0 \
+		  --opt_for_speed=0 \
+		  --code_state=32 \
+		  --disable_inlining \
+		  --gcc \
+		  --issue_remarks \
+		  --display_error_number \
+		  --quiet \
+		  --obj_directory=build \
+		  #-g \
+		  --symdebug:dwarf
 
-comma=,
-#LDFLAGS:=$(addprefix -Wl$(comma),$(LDFLAGS))
+ASFLAGS:=--quiet \
+   	     --abi=eabi \
+		 -mv7r4 \
+		 --float_support=VFPv3D16 \
+		 --symdebug:dwarf \
+		 --obj_directory=build
 
-AS:=$(CROSS_COMPILE)as
-CC:=$(CROSS_COMPILE)gcc
-LD:=$(CROSS_COMPILE)ld
-OBJCOPY:=$(CROSS_COMPILE)objcopy
+LDFLAGS:=--reread_libs --rom_model --warn_sections --be32 --mapfile_contents=all -stack=0x2F800 -heap=0x2F800
+
+AS:=armcl
+CC:=armcl
+LD:=armlnk
+HEX_TOOL := armhex
+HEX2BIN := $(PWD)/hex2bin
 
 
-LD_LIBRARIES:=c m gcc :F021_API_CortexR4_BE_V3D16_NDS.lib
+LD_LIBRARIES:=rtsv7R4_T_be_v3D16_eabi.lib
 LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
-#/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/
-LD_LIBRARY_PATH:=$(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libc /usr/lib/gcc/arm-none-eabi/6.3.1/ ../F021 \
-				 $(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib/libm
-LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
+LD_LIBRARY_PATH:= ../F021 /opt/ti/arm/lib
+
+
+LD_LIBRARY_PATH:=$(addprefix -i,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=src
 HAL_SRC_DIR:=hal/src/$(TARGET_PLATFORM)
@@ -36,10 +61,10 @@ CSRC:=$(wildcard $(SRC_DIR)/*.c)
 CSRC:=$(CSRC) $(wildcard $(HAL_SRC_DIR)/*.c)
 CSRC:=$(CSRC) $(wildcard $(HAL_TARGET_SRC_DIR)/*.c)
 
-ASMSRC:=$(wildcard $(HAL_TARGET_SRC_DIR)/*.s)
+ASMSRC:=$(wildcard $(HAL_TARGET_SRC_DIR)/*.asm)
 
-OBJS:=$(CSRC:.c=.o)
-OBJS:=$(OBJS) $(ASMSRC:.s=.o)
+OBJS:=$(CSRC:.c=.obj)
+OBJS:=$(OBJS) $(ASMSRC:.asm=.obj)
 OBJS:=$(subst $(HAL_SRC_DIR), build, $(OBJS))
 OBJS:=$(subst $(HAL_TARGET_SRC_DIR), build, $(OBJS))
 OBJS:=$(subst $(SRC_DIR), build, $(OBJS))
@@ -50,16 +75,18 @@ CINC:=$(addprefix -I, $(CINC))
 ASINC:=$(addprefix -I, $(ASINC))
 
 FW:=build/fw.bin
+FW_HEX:=build/fw.b0
 ELF:=build/fw.out
 
 all: $(FW)
 
 $(FW): $(ELF)
-	$(OBJCOPY) -Obinary $(ELF) $(FW)
+	$(HEX_TOOL) $(PWD)/fw/F021.cmd
+	$(HEX2BIN) $(FW_HEX)
 
 $(ELF): $(OBJS)
-	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) --start-group $(LD_LIBRARIES) --end-group -Tsrc/fw.ld -o $(ELF) $(OBJS) \
-		/home/mgrumic/shared/MUTTERS-Bootloader/tms570LC4357ZWT/F021/objs/FlashStateMachine.InitializeFlashBanks.obj
+	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) $(LD_LIBRARIES) -lsrc/fw.ld -o $(ELF) $(OBJS) \
+		--map_file=$(PWD)/fw/build/fw.map
 
 prebuild:
 	@echo "Buildnig FW..."
@@ -67,15 +94,15 @@ prebuild:
 
 $(OBJS): prebuild
 
-$(BUILD_DIR)/%.o: $(HAL_TARGET_SRC_DIR)/%.c
-	$(CC) $(CFLAGS) $< $(CINC) -o $@
+$(BUILD_DIR)/%.obj: $(HAL_TARGET_SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< $(CINC)
 
-$(BUILD_DIR)/%.o: $(HAL_SRC_DIR)/%.c
-	$(CC) $(CFLAGS) $< $(CINC) -o $@
+$(BUILD_DIR)/%.obj: $(HAL_SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< $(CINC)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) $< $(CINC) -o $@
+$(BUILD_DIR)/%.obj: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< $(CINC)
 
-$(BUILD_DIR)/%.o: $(HAL_TARGET_SRC_DIR)/%.s
-	$(AS) $(ASFLAGS) $< $(ASINC) -o $@
+$(BUILD_DIR)/%.obj: $(HAL_TARGET_SRC_DIR)/%.asm
+	$(AS) $(ASFLAGS) $< $(ASINC)
 

@@ -1,0 +1,124 @@
+;
+; This script is for ARGOBOARD.
+; It copies firmware to it's execution address (0x10000)
+;
+; Purpose:
+;   - Setup of TMS570LC43x internal flash
+;
+; HINTS:
+;
+;   Flash programming algorithm is linked to address 0x08000000 and is not
+;   position independent. Code address of FLASH.TARGET command has not be
+;   changed.
+;
+
+GLOBAL &fwBinaryName
+GLOBAL &fwImagePath
+GLOBAL &appInit
+
+&fwImagePath="D:\Shared_VM\MUTTERS-Bootloader\tms570LC4357ZWT\fw\build"
+&srcFolder="D:\Shared_VM\MUTTERS-Bootloader\tms570LC4357ZWT"
+&fwBinaryName="fw.bin"
+&appInit=0x00010000
+
+;========================================================================
+; Setup CPU
+SYStem.RESet
+; IMPORTANT: For use with TI HERCULES evaluation board resbreak must be set to 
+;            OFF.
+; Reason: On this evaluation board is the the JTEG reset pin connected with the 
+;         power on reset, but it should be connected with the warm reset pin of
+;         the TMS570.
+system.option.resbreak ON
+SYStem.CPU TMS570LC4357
+ETM.OFF
+SYStem.Option.EnReset OFF
+
+system.config TPIU BASE DAP:0xFFA03000
+system.config ETM BASE  DAP:0xFFA02000
+
+
+SYStem.Up
+
+;========================================================================
+; Flash declaration
+
+FLASH.RESet
+; Program flash
+FLASH.Create 1. 0x10000--(0x17FFF)  0x4000 TARGET Byte 0. ; Bank 0
+FLASH.Create 1. 0x18000--(0x1FFFF)  0x8000 TARGET Byte 0. ; Bank 0
+
+; Use flashfile with Auto ECC
+FLASH.TARGET 0x08000000 0x08002000 0x4000 ~~/demo/arm/flash/byte_be/f021r4l2fmc.bin
+
+FLASH.CLocK auto
+
+;========================================================================
+; Flash programming example
+
+DIALOG.YESNO "Program flash memory?"
+LOCAL &progflash
+ENTRY &progflash
+
+IF &progflash 
+(
+	FLASH.ReProgram All
+    Data.LOAD.binary &fwImagePath\&fwBinaryName 0x10000
+    FLASH.ReProgram off
+    Print "Application flashed..."
+)
+;========================================================================
+
+sYmbol.sourcepath.reset                                 ; Reset search path configuration
+symbol.SOURCEPATH.SETRECURSEDIR &srcFolder              ; Define recursive direct search path
+
+
+; setup window configuration
+
+DIALOG.YESNO "Reset windows?"                           ; Ask user, if he wants to program the flash memory
+LOCAL &resetWin
+ENTRY &resetWin                                         ; Pass answer from dialog box to progflash
+
+IF &resetWin                                            ; Execute following commands dependant on user's decision
+(
+ TOOLBAR ON
+ STATUSBAR ON
+ FRAMEPOS 16.5,8.25,,,Maximized                         ; Controls the position of TRACE32 in MDI window mode
+ WINPAGE.RESET                                          ; Reset window system
+    
+ WINCLEAR                                               ; Erase windows
+ WINPOS 127.25 0.0 53. 40. 0. 1. W002                   ; Set window dimensions
+ WINTABS 21. 21.                                        ; Define TABs
+ sYmbol.Browse.Function                                 ; Browse functions
+    
+ WINPOS 0.0 43.625 124. 6. 23. 1. W003                  ; Set window dimensions
+ WINTABS 0. 16. 0. 0. 0. 0. 0.                          ; Define TABs
+ Break.List                                             ; Display list of breakpoints
+ 
+ WINPOS 183.75 0.0625 52. 41. 0. 0. W001                ; Set window dimensions
+ Register                                               ; Processor registers
+ 
+ WINPOS 127.75 44.5 108. 5. 0. 0. W004                  ; Set window dimensions
+ ; Open 'Var.Watch' window
+ Var.Watch                                              
+ 
+ WINPOS 0.125 0.0625 123. 39. 13. 1. W000               ; Set window dimensions
+ WINTABS 10. 10. 25. 62.                                ; Define TABs
+ Data.List                                              ; Open Source Code window
+        
+ WINPAGE.SELECT P000                                    ; Select page
+) 
+
+
+
+; use onchip breakpoints
+map.bonchip
+
+; Set format of data values to hex
+setup.var %HEX  
+  
+;======================
+;===  end of script ===
+;======================
+
+ENDDO

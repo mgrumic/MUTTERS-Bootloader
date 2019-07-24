@@ -3,7 +3,7 @@
 
 #include "ti_fee.h"
 
-uint16_t blockNumber = 0x80;
+uint16_t blockNumber = 0x04;
 uint8_t dataBuffer[] = {
 	0xDE, 0xAD, 0xBE, 0xEF,
 	0xDE, 0xAD, 0xBE, 0xEF,
@@ -43,14 +43,6 @@ int fw_main() {
 	while(1) {
 		uart_send((uint8_t*) "Hello from FW!!!\r\n");
 
-		TI_Fee_WriteSync(blockNumber, dataBuffer);
-
 	}
-	return 0;
-}
-
-void exit(int _status)
-{
-	while(1);
 }
 

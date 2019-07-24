@@ -1,7 +1,7 @@
 /** @file HL_sys_startup.c 
 *   @brief Startup Source File
-*   @date 07-July-2017
-*   @version 04.07.00
+*   @date 11-Dec-2018
+*   @version 04.07.01
 *
 *   This file contains:
 *   - Include Files
@@ -14,7 +14,7 @@
 */
 
 /* 
-* Copyright (C) 2009-2016 Texas Instruments Incorporated - www.ti.com  
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
 * 
 * 
 *  Redistribution and use in source and binary forms, with or without 
@@ -60,6 +60,7 @@
 #include "HL_sys_core.h"
 #include "HL_esm.h"
 #include "HL_sys_mpu.h"
+#include "HL_errata_SSWF021_45.h"
 
 /* USER CODE BEGIN (1) */
 /* USER CODE END */
@@ -68,8 +69,11 @@
 /* USER CODE END */
 
 /* External Functions */
+
+/*SAFETYMCUSW 218 S MR:20.2 <APPROVED> "Functions from library" */
+extern void __TI_auto_init(void);
 /*SAFETYMCUSW 354 S MR:NA <APPROVED> " Startup code(main should be declared by the user)" */
-extern void main(void);
+extern int main(void);
 /*SAFETYMCUSW 122 S MR:20.11 <APPROVED> "Startup code(exit and abort need to be present)" */
 /*SAFETYMCUSW 354 S MR:NA <APPROVED> " Startup code(Extern declaration present in the library)" */
 extern void exit(int _status);
@@ -77,20 +81,23 @@ extern void exit(int _status);
 
 /* USER CODE BEGIN (3) */
 /* USER CODE END */
-
+void handlePLLLockFail(void);
 /* Startup Routine */
-void _c_int00(void) __attribute__((noreturn));
+void __mutters_int00(void);
+#define PLL_RETRIES 5U
 /* USER CODE BEGIN (4) */
 /* USER CODE END */
 
-__attribute__ ((naked))
+#pragma CODE_STATE(__mutters_int00, 32)
+#pragma INTERRUPT(__muterrs_int00, RESET)
+#pragma WEAK(__mutters_int00)
 
 /* SourceId : STARTUP_SourceId_001 */
 /* DesignId : STARTUP_DesignId_001 */
 /* Requirements : HL_CONQ_STARTUP_SR1 */
-void _c_int00(void)
+void __mutters_int00(void)
 {
-
+	register resetSource_t rstSrc;
 /* USER CODE BEGIN (5) */
 /* USER CODE END */
 
@@ -103,9 +110,21 @@ void _c_int00(void)
     /* Reset handler: the following instructions read from the system exception status register
      * to identify the cause of the CPU reset.
      */
-    switch(getResetSource())
+	rstSrc = getResetSource();
+    switch(rstSrc)
     {
         case POWERON_RESET:
+		/* Initialize L2RAM to avoid ECC errors right after power on */
+		_memInit_();
+
+		/* Add condition to check whether PLL can be started successfully */
+        if (_errata_SSWF021_45_both_plls(PLL_RETRIES) != 0U)
+		{
+			/* Put system in a safe state */
+			handlePLLLockFail();
+		}
+		
+/*SAFETYMCUSW 62 S MR:15.2, 15.5 <APPROVED> "Need to continue to handle POWERON Reset" */
         case DEBUG_RESET:
         case EXT_RESET:
 
@@ -113,7 +132,10 @@ void _c_int00(void)
 /* USER CODE END */
 
         /* Initialize L2RAM to avoid ECC errors right after power on */
-        _memInit_();
+		if(rstSrc != POWERON_RESET)
+		{
+			_memInit_();
+		}
 
 /* USER CODE BEGIN (7) */
 /* USER CODE END */
@@ -173,6 +195,7 @@ void _c_int00(void)
 		
         case WATCHDOG_RESET:
         case WATCHDOG2_RESET:
+				
 /* USER CODE BEGIN (15) */
 /* USER CODE END */
         break;
@@ -198,6 +221,7 @@ void _c_int00(void)
         break;
     
         case SW_RESET:
+		
 /* USER CODE BEGIN (20) */
 /* USER CODE END */
         break;
@@ -221,19 +245,12 @@ void _c_int00(void)
 /* USER CODE BEGIN (24) */
 /* USER CODE END */
 
-    {
-    	extern uint32 _sidata, _sdata, _edata;
-    	uint32 *src, *dst;
 
-    	src = &_sidata;
-    	dst = &_sdata;
+/* USER CODE BEGIN (25) */
+/* USER CODE END */
 
-       	while (dst < &_edata)
-       	{
-    		*dst++ = *src++;
-    	}
-
-    }
+        /* initialize global variable and constructors */
+    __TI_auto_init();
 /* USER CODE BEGIN (26) */
 /* USER CODE END */
     
@@ -242,9 +259,11 @@ void _c_int00(void)
 /*SAFETYMCUSW 326 S MR:8.2 <APPROVED> "Startup code(Declaration for main in library)" */
 /*SAFETYMCUSW 60 D MR:8.8 <APPROVED> "Startup code(Declaration for main in library;Only doing an extern for the same)" */
     main();
-
+/* USER CODE BEGIN (27) */
+/* USER CODE END */
 /*SAFETYMCUSW 122 S MR:20.11 <APPROVED> "Startup code(exit and abort need to be present)" */
     exit(0);
+
 
 /* USER CODE BEGIN (28) */
 /* USER CODE END */
@@ -254,7 +273,21 @@ void _c_int00(void)
 /* USER CODE BEGIN (29) */
 /* USER CODE END */
 
-
-
+/** @fn void handlePLLLockFail(void)
+*   @brief This function handles PLL lock fail.
+*/
 /* USER CODE BEGIN (30) */
+/* USER CODE END */
+void handlePLLLockFail(void)
+{
+/* USER CODE BEGIN (31) */
+/* USER CODE END */
+	while(1)
+	{
+		
+	}
+/* USER CODE BEGIN (32) */
+/* USER CODE END */
+}
+/* USER CODE BEGIN (33) */
 /* USER CODE END */

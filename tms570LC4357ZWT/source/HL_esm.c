@@ -1,7 +1,7 @@
 /** @file HL_esm.c
 *   @brief Esm Driver Source File
-*   @date 07-July-2017
-*   @version 04.07.00
+*   @date 11-Dec-2018
+*   @version 04.07.01
 *
 *   This file contains:
 *   - API Functions
@@ -10,7 +10,7 @@
 */
 
 /* 
-* Copyright (C) 2009-2016 Texas Instruments Incorporated - www.ti.com  
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
 * 
 * 
 *  Redistribution and use in source and binary forms, with or without 
@@ -1022,6 +1022,8 @@ void esmGetConfigValue(esm_config_reg_t *config_reg, config_value_type_t type)
 /** @fn void esmHighInterrupt(void)
 *   @brief High Level Interrupt for ESM
 */
+#pragma CODE_STATE(esmHighInterrupt, 32)
+#pragma INTERRUPT(esmHighInterrupt, FIQ)
 
 /* SourceId : ESM_SourceId_025 */
 /* DesignId : ESM_DesignId_025 */

@@ -1,30 +1,52 @@
 TARGET_PLATFORM ?= tms570
 
-CROSS_COMPILE ?= arm-none-eabi-
-TARGET ?= arm
+COMPILER_DIR := /opt/ti/arm
 
-CINC:=include/
-ASINC:=include/
+CINC := include/ $(COMPILER_DIR)/include mutters/include F021/include
 
-CFLAGS:=-mbig-endian -Wall -Werror -mhard-float -march=armv7-r -mcpu=cortex-r4f \
-	-fomit-frame-pointer -fno-strict-aliasing -finline -nostdlib -O0 -g -c
-ASFLAGS:=-mbig-endian -mfpu=fpv4-sp-d16 -march=armv7-r -mcpu=cortex-r4f -g -c
-LDFLAGS:=-nostdlib -EB --gc-section
+ASINC := include/
 
-comma=,
-#LDFLAGS:=$(addprefix -Wl$(comma),$(LDFLAGS))
+CFLAGS := --abi=eabi \
+		  --auto_inline=0 \
+		  --endian=big \
+		  -mv7r4 \
+		  --float_support=VFPv3D16 \
+		  --wchar_t=16 \
+		  --plain_char=unsigned \
+		  --small_enum \
+		  --fp_mode=strict \
+		  --check_misra=none \
+		  --opt_level=0 \
+		  --opt_for_speed=0 \
+		  --code_state=32 \
+		  --disable_inlining \
+		  --gcc \
+		  -g \
+		  --issue_remarks \
+		  --display_error_number \
+		  --quiet \
+		  --symdebug:dwarf \
+		  --obj_directory=build
 
-AS:=$(CROSS_COMPILE)as
-CC:=$(CROSS_COMPILE)gcc
-LD:=$(CROSS_COMPILE)ld
 
+ASFLAGS := --quiet \
+		  --abi=eabi \
+ 		  -mv7r4 \
+ 		  --float_support=VFPv3D16 \
+ 		  --symdebug:dwarf \
+ 		  --obj_directory=build
 
+LDFLAGS:=--reread_libs --rom_model --warn_sections --be32 --mapfile_contents=all -stack=0x2F800 -heap=0x2F800
 
-LD_LIBRARIES:=gcc c m
-LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
+AS:=armcl
+CC:=armcl
+LD:=armlnk
 
-LD_LIBRARY_PATH:=$(PWD)/newlib/newlib-3.0.0/arm-none-eabi/hard/newlib /usr/lib/gcc/arm-none-eabi/6.3.1/
-LD_LIBRARY_PATH:=$(addprefix -L,$(LD_LIBRARY_PATH))
+LD_LIBRARIES := rtsv7R4_T_be_v3D16_eabi.lib F021_API_CortexR4_BE_V3D16.lib
+LD_LIBRARIES := $(addprefix -l, $(LD_LIBRARIES))
+
+LD_LIBRARY_PATH := /opt/ti/arm/lib F021/
+LD_LIBRARY_PATH := $(addprefix -i,$(LD_LIBRARY_PATH))
 
 SRC_DIR:=source
 BUILD_DIR:=build
@@ -32,20 +54,22 @@ BUILD_DIR:=build
 
 CSRC:=$(wildcard source/*.c)
 CSRC+=$(wildcard mutters/src/*.c)
-ASMSRC:=$(wildcard source/*.s)
+ASMSRC:=$(wildcard source/*.asm)
 
-OBJS:=$(CSRC:.c=.o)
-OBJS+=$(ASMSRC:.s=.o)
+OBJS:=$(CSRC:.c=.obj)
+OBJS+=$(ASMSRC:.asm=.obj)
 OBJS:=$(subst source, build, $(OBJS))
 OBJS:=$(subst mutters/src, build, $(OBJS))
 
-.PHONY: all prebuild fw
+.PHONY: all prebuild fw clean
+
 
 CINC:=$(addprefix -I, $(CINC))
 ASINC:=$(addprefix -I, $(ASINC))
 
-all: fw $(OBJS)
-	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) --start-group $(LD_LIBRARIES) --end-group -Tsource/HL_sys_link.ld -o build/hal.out $(OBJS)
+all: $(OBJS)
+	$(LD) $(LDFLAGS) -lsource/HL_sys_link.cmd -o build/hal.out $(OBJS) $(LD_LIBRARY_PATH) $(LD_LIBRARIES)
+
 prebuild:
 	$(VERBOSE)mkdir -p $(BUILD_DIR) 
 
@@ -54,12 +78,15 @@ fw:
 
 $(OBJS): prebuild
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) $< $(CINC) -o $@
+$(BUILD_DIR)/%.obj: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) $< $(CINC)
 
-$(BUILD_DIR)/%.o: mutters/src/%.c
-	$(CC) $(CFLAGS) $< $(CINC) -o $@
+$(BUILD_DIR)/%.obj: mutters/src/%.c
+	$(CC) $(CFLAGS) $< $(CINC)
 
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s
-	$(AS) $(ASFLAGS) $< $(ASINC) -o $@
+$(BUILD_DIR)/%.obj: $(SRC_DIR)/%.asm
+	$(AS) $(ASFLAGS) $< $(ASINC)
 
+clean:
+	rm -rf build/*
+	rm -rf fw/build/*

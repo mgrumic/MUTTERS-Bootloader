@@ -61,7 +61,9 @@
 */
 
 /* USER CODE BEGIN (2) */
-extern int fw_main();
+int fw_main(void);
+
+int main(void) __attribute__((section(".mutters_init")));
 /* USER CODE END */
 
 int main(void)

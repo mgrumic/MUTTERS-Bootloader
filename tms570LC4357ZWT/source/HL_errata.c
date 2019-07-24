@@ -1,14 +1,14 @@
 /** @file HL_errata.c
 *   @brief Errata workaround Source File
-*   @date 07-July-2017
-*   @version 04.07.00
+*   @date 11-Dec-2018
+*   @version 04.07.01
 *
 *   This file contains:
 *   - Errata workaround API's
 */
 
 /* 
-* Copyright (C) 2009-2016 Texas Instruments Incorporated - www.ti.com  
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
 * 
 * 
 *  Redistribution and use in source and binary forms, with or without 
@@ -54,6 +54,7 @@
 *
 *    This function is called if there is a errata workaround fail with appropriate flag
 */
+#pragma WEAK(errataFailNotification)
 void errataFailNotification(uint32 flag)
 {
 /* USER CODE BEGIN (1) */

@@ -4,10 +4,10 @@
     <family>TMS570LC43x</family>
     <device>TMS570LC4357ZWT</device>
     <dilfile>tms570LC4357ZWT.dil</dilfile>
-    <tools>gcc</tools>
+    <tools>ti</tools>
   </DEVICE>
   <VERSION>
-    <version>04.06.00</version>
+    <version>04.07.01</version>
   </VERSION>
   <HET1>
     <FILENAME>
@@ -93,7 +93,7 @@
       </HDRSYSTEM>
       <HDRVIM>
         <NAME>HL_sys_vim.h</NAME>
-        <PATH>D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\include\HL_sys_vim.h</PATH>
+        <PATH>include\HL_sys_vim.h</PATH>
       </HDRVIM>
       <HDRMPU>
         <NAME>HL_sys_mpu.h</NAME>
@@ -117,19 +117,19 @@
       </HDRDMA>
       <SRCCORE>
         <NAME>HL_sys_core.asm</NAME>
-        <PATH>D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\source\HL_sys_core.asm</PATH>
+        <PATH>source\HL_sys_core.asm</PATH>
       </SRCCORE>
       <SRCINTVECS>
         <NAME>HL_sys_intvecs.asm</NAME>
-        <PATH>D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\source\HL_sys_intvecs.asm</PATH>
+        <PATH>source\HL_sys_intvecs.asm</PATH>
       </SRCINTVECS>
       <SRCMPU>
         <NAME>HL_sys_mpu.asm</NAME>
-        <PATH>D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\source\HL_sys_mpu.asm</PATH>
+        <PATH>source\HL_sys_mpu.asm</PATH>
       </SRCMPU>
       <SRCPMU>
         <NAME>HL_sys_pmu.asm</NAME>
-        <PATH>D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\source\HL_sys_pmu.asm</PATH>
+        <PATH>source\HL_sys_pmu.asm</PATH>
       </SRCPMU>
       <SRCPCR>
         <NAME>HL_sys_pcr.c</NAME>
@@ -169,7 +169,7 @@
       </SRCNOTIFY>
       <SRCCMD>
         <NAME>HL_sys_link.cmd</NAME>
-        <PATH>D:\Diplomski\MUTTERS-Bootloader\tms570LC4357ZWT\source\HL_sys_link.cmd</PATH>
+        <PATH>source\HL_sys_link.cmd</PATH>
       </SRCCMD>
       <HDREPC_R>
         <NAME>HL_reg_epc.h</NAME>
@@ -483,6 +483,18 @@
         <NAME>HL_sys_link.ld</NAME>
         <PATH>source\HL_sys_link.ld</PATH>
       </SRCCMD_GCC>
+      <SSWFHDRERRATA>
+        <NAME>HL_errata_SSWF021_45.h</NAME>
+        <PATH>include\HL_errata_SSWF021_45.h</PATH>
+      </SSWFHDRERRATA>
+      <SSWFHDREGERRATA>
+        <NAME>HL_errata_SSWF021_45_defs.h</NAME>
+        <PATH>include\HL_errata_SSWF021_45_defs.h</PATH>
+      </SSWFHDREGERRATA>
+      <SSWFSRCERRATA>
+        <NAME>HL_errata_SSWF021_45.c</NAME>
+        <PATH>source\HL_errata_SSWF021_45.c</PATH>
+      </SSWFSRCERRATA>
     </FILENAMES>
   </SYSTEM>
   <PINMUX>

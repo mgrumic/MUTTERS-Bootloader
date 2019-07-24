@@ -1,129 +1,107 @@
 /*----------------------------------------------------------------------------*/
-/* sys_link.ld                                                              */
+/* sys_link.cmd                                                               */
 /*                                                                            */
-/* (c) MG Instruments 2018, All rights reserved.                      */
+/* 
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
+* 
+* 
+*  Redistribution and use in source and binary forms, with or without 
+*  modification, are permitted provided that the following conditions 
+*  are met:
+*
+*    Redistributions of source code must retain the above copyright 
+*    notice, this list of conditions and the following disclaimer.
+*
+*    Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the 
+*    documentation and/or other materials provided with the   
+*    distribution.
+*
+*    Neither the name of Texas Instruments Incorporated nor the names of
+*    its contributors may be used to endorse or promote products derived
+*    from this software without specific prior written permission.
+*
+*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+*  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+*  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
+*  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+*  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+*  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+*  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+*  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+*  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*/
+
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-/* Entry Point */
-ENTRY(fw_main)
-/* Highest address of the stack */
+/* USER CODE BEGIN (0) */
+/* USER CODE END */
+
+
+/*----------------------------------------------------------------------------*/
+/* Linker Settings                                                            */
+
+--retain="*(.intvecs)"
+
+/* USER CODE BEGIN (1) */
+--entry_point=fw_main
+/* USER CODE END */
+
+/*----------------------------------------------------------------------------*/
+/* Memory Map                                                                 */
+
 MEMORY
 {
-  FLASH  (rx)     : ORIGIN = 0x00010000, LENGTH = (0x001FFFE0 + 0x00200000)
-  CPU_STACK (rw)  : ORIGIN = 0x08000000, LENGTH = 0x00001500 /* Stack is configured in sys_core.asm */
-  RAM (xrw)       : ORIGIN = 0x08001500, LENGTH = 0x0007EB00
-  MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
+/* USER CODE BEGIN (2) */
+/* USER CODE END */
+    FLASH0  (RX) : origin=0x00010000 length=0x001EFFE0
+    FLASH1  (RX) : origin=0x00200000 length=0x00200000
+    STACKS  (RW) : origin=0x08000000 length=0x00001500
+    RAM     (RW) : origin=0x08001500 length=0x0007EB00
+
+/* USER CODE BEGIN (3) */
+/* USER CODE END */
 }
 
-/* Define output sections */
+/* USER CODE BEGIN (4) */
+/* USER CODE END */
+
+
+/*----------------------------------------------------------------------------*/
+/* Section Configuration                                                      */
+
 SECTIONS
 {
-	/* The program code and other data goes into RAM */
-  .text :
-  {
-    . = ALIGN(4);
-	*(.mutters)
-    *(.text)           /* .text sections (code) */
-    *(.text*)          /* .text* sections (code) */
-    *(.glue_7)         /* glue arm to thumb code */
-    *(.glue_7t)        /* glue thumb to arm code */
-    *(.eh_frame)
+/* USER CODE BEGIN (5) */
+	.mutters_init	align(32) : {} > 0x10000
+/* USER CODE END */
+    .text   align(32) : {} > FLASH0
+    .const  align(32) : {} > FLASH0
+    .cinit  align(32) : {} > FLASH0
+    .pinit  align(32) : {} > FLASH0
+    .bss     : {} > RAM
+    .data    : {} > RAM
+    .sysmem  : {} > RAM
+	
+    FEE_TEXT_SECTION  : {} > FLASH0
+    FEE_CONST_SECTION : {} > FLASH0
+    FEE_DATA_SECTION  : {} > RAM
 
-    KEEP (*(.init))
-    KEEP (*(.fini))
-
-    . = ALIGN(4);
-    _etext = .;        /* define a global symbols at end of code */
-  } > FLASH
-
-  /* Constant data goes into RAM */
-  .rodata :
-  {
-    . = ALIGN(4);
-    *(.rodata)         /* .rodata sections (constants, strings, etc.) */
-    *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
-    . = ALIGN(4);
-  } >FLASH
-
-   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >RAM
-    .ARM : {
-    __exidx_start = .;
-      *(.ARM.exidx*)
-      __exidx_end = .;
-    } >FLASH
-
-  .preinit_array     :
-  {
-    PROVIDE_HIDDEN (__preinit_array_start = .);
-    KEEP (*(.preinit_array*))
-    PROVIDE_HIDDEN (__preinit_array_end = .);
-  } >FLASH
-  .init_array :
-  {
-    PROVIDE_HIDDEN (__init_array_start = .);
-    KEEP (*(SORT(.init_array.*)))
-    KEEP (*(.init_array*))
-    PROVIDE_HIDDEN (__init_array_end = .);
-  } > FLASH
-  .fini_array :
-  {
-    PROVIDE_HIDDEN (__fini_array_start = .);
-    KEEP (*(SORT(.fini_array.*)))
-    KEEP (*(.fini_array*))
-    PROVIDE_HIDDEN (__fini_array_end = .);
-  } > FLASH
-
-  /* used by the startup to initialize data */
-  _sidata = LOADADDR(.data);
-  
-  /* Initialized data sections goes into RAM, load LMA copy after code */
-  .data :
-  {
-    . = ALIGN(4);
-    _sdata = .;        /* create a global symbol at data start */
-    *(.data)           /* .data sections */
-    *(.data*)          /* .data* sections */
-
-    . = ALIGN(4);
-    _edata = .;        /* define a global symbol at data end */
-  } >RAM AT> FLASH
-
-  /* Uninitialized data section */
-  . = ALIGN(4);
-  .bss :
-  {
-    /* This is used by the startup in order to initialize the .bss secion */
-    _sbss = .;         /* define a global symbol at bss start */
-    __bss_start__ = _sbss;
-    *(.bss)
-    *(.bss*)
-    *(COMMON)
-
-    . = ALIGN(4);
-    _ebss = .;         /* define a global symbol at bss end */
-    __bss_end__ = _ebss;
-  } > RAM
-
-  PROVIDE ( end = _ebss );
-  PROVIDE ( _end = _ebss );
-
-  /* MEMORY_bank1 section, code must be located here explicitly            */
-  /* Example: extern int foo(void) __attribute__ ((section (".mb1text"))); */
-  .memory_b1_text :
-  {
-    *(.mb1text)        /* .mb1text sections (code) */
-    *(.mb1text*)       /* .mb1text* sections (code)  */
-    *(.mb1rodata)      /* read-only data (constants) */
-    *(.mb1rodata*)
-  } >MEMORY_B1
-
-  /* Remove information from the standard libraries */
-  /DISCARD/ :
-  {
-    libc.a ( * )
-    libm.a ( * )
-    libgcc.a ( * )
-  }
-  
-  .ARM.attributes 0 : { *(.ARM.attributes) }
+/* USER CODE BEGIN (6) */
+/* USER CODE END */
 }
+
+/* USER CODE BEGIN (7) */
+/* USER CODE END */
+
+
+/*----------------------------------------------------------------------------*/
+/* Misc                                                                       */
+
+/* USER CODE BEGIN (8) */
+/* USER CODE END */
+/*----------------------------------------------------------------------------*/
+

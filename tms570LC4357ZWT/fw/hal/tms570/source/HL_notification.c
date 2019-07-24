@@ -55,6 +55,7 @@
 
 /* USER CODE BEGIN (0) */
 /* USER CODE END */
+#pragma WEAK(esmGroup1Notification)
 void esmGroup1Notification(esmBASE_t *esm, uint32 channel)
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */
@@ -64,6 +65,7 @@ void esmGroup1Notification(esmBASE_t *esm, uint32 channel)
 
 /* USER CODE BEGIN (2) */
 /* USER CODE END */
+#pragma WEAK(esmGroup2Notification)
 void esmGroup2Notification(esmBASE_t *esm, uint32 channel)
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */
@@ -73,6 +75,7 @@ void esmGroup2Notification(esmBASE_t *esm, uint32 channel)
 
 /* USER CODE BEGIN (4) */
 /* USER CODE END */
+#pragma WEAK(esmGroup3Notification)
 void esmGroup3Notification(esmBASE_t *esm, uint32 channel)
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */
@@ -88,6 +91,7 @@ void esmGroup3Notification(esmBASE_t *esm, uint32 channel)
 /* USER CODE BEGIN (7) */
 /* USER CODE END */
 
+#pragma WEAK(dmaGroupANotification)
 void dmaGroupANotification(dmaInterrupt_t inttype, uint32 channel)
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */
@@ -104,6 +108,7 @@ void dmaGroupANotification(dmaInterrupt_t inttype, uint32 channel)
 /* USER CODE BEGIN (11) */
 /* USER CODE END */
 
+#pragma WEAK(sciNotification)
 void sciNotification(sciBASE_t *sci, uint32 flags)     
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */
@@ -131,12 +136,14 @@ void sciNotification(sciBASE_t *sci, uint32 flags)
 /* USER CODE BEGIN (56) */
 /* USER CODE END */
 
+#pragma WEAK(epcCAMFullNotification)
 void epcCAMFullNotification(void)
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */
 /* USER CODE BEGIN (57) */
 /* USER CODE END */
 }
+#pragma WEAK(epcFIFOFullNotification)
 void epcFIFOFullNotification(uint32 epcFIFOStatus)
 {
 /*  enter user code between the USER CODE BEGIN and USER CODE END. */

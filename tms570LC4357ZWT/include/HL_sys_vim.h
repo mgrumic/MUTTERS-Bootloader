@@ -1,7 +1,7 @@
 /** @file HL_sys_vim.h
 *   @brief Vectored Interrupt Module Header File
-*   @date 07-July-2017
-*   @version 04.07.00
+*   @date 11-Dec-2018
+*   @version 04.07.01
 *   
 *   This file contains:
 *   - VIM Type Definitions
@@ -11,7 +11,7 @@
 */
 
 /* 
-* Copyright (C) 2009-2016 Texas Instruments Incorporated - www.ti.com  
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
 * 
 * 
 *  Redistribution and use in source and binary forms, with or without 
@@ -89,8 +89,8 @@ typedef enum systemInterrupt
 
 /* Interrupt Handlers */
 
-extern void esmHighInterrupt(void) __attribute__ ((weak, interrupt("FIQ")));
-extern void phantomInterrupt(void) __attribute__ ((weak, interrupt("IRQ")));
+extern void esmHighInterrupt(void);
+extern void phantomInterrupt(void);
 
 /* USER CODE BEGIN (3) */
 /* USER CODE END */

@@ -1,12 +1,12 @@
 /** @file HL_sys_vim.c
 *   @brief VIM Driver Implementation File
-*   @date 07-July-2017
-*   @version 04.07.00
+*   @date 11-Dec-2018
+*   @version 04.07.01
 *
 */
 
 /* 
-* Copyright (C) 2009-2016 Texas Instruments Incorporated - www.ti.com  
+* Copyright (C) 2009-2018 Texas Instruments Incorporated - www.ti.com  
 * 
 * 
 *  Redistribution and use in source and binary forms, with or without 
@@ -762,6 +762,9 @@ void vimGetConfigValue(vim_config_reg_t *config_reg, config_value_type_t type)
 /* USER CODE BEGIN (10) */
 /* USER CODE END */
 
+#pragma CODE_STATE(vimECCErrorHandler, 32)
+#pragma INTERRUPT(vimECCErrorHandler, IRQ)
+#pragma WEAK(vimECCErrorHandler)
 
 /* SourceId : VIM_SourceId_006 */
 /* DesignId : VIM_DesignId_006 */
