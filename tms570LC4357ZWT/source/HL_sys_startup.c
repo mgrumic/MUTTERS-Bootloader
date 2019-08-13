@@ -89,7 +89,7 @@ void __mutters_int00(void);
 /* USER CODE END */
 
 #pragma CODE_STATE(__mutters_int00, 32)
-#pragma INTERRUPT(__muterrs_int00, RESET)
+#pragma INTERRUPT(__mutters_int00, RESET)
 #pragma WEAK(__mutters_int00)
 
 /* SourceId : STARTUP_SourceId_001 */
@@ -239,8 +239,6 @@ void __mutters_int00(void)
 	
 /* USER CODE BEGIN (23) */
 /* USER CODE END */
-
-    _cacheEnable_();
 
 /* USER CODE BEGIN (24) */
 /* USER CODE END */

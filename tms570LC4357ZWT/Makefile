@@ -68,7 +68,7 @@ CINC:=$(addprefix -I, $(CINC))
 ASINC:=$(addprefix -I, $(ASINC))
 
 all: $(OBJS)
-	$(LD) $(LDFLAGS) -lsource/HL_sys_link.cmd -o build/hal.out $(OBJS) $(LD_LIBRARY_PATH) $(LD_LIBRARIES)
+	$(LD) $(LDFLAGS) --map_file=$(BUILD_DIR)/hal.map -lsource/HL_sys_link.cmd -o build/hal.out $(OBJS) $(LD_LIBRARY_PATH) $(LD_LIBRARIES)
 
 prebuild:
 	$(VERBOSE)mkdir -p $(BUILD_DIR) 

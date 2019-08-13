@@ -18,6 +18,20 @@ void uart_send(char* message) {
     sciSend((sciBASE_t*) sciREG1, strlen(message), (uint8_t*) message);
 }
 
+extern uint32_t __mutt_flash_start;
+extern uint32_t __mutt_flash_end;
+extern uint32_t __mutt_flash_run_start;
+
+void copyRamFuncs() {
+	uint8_t* start = (uint8_t*) &__mutt_flash_start;
+	uint8_t* end   = (uint8_t*) &__mutt_flash_end;
+	uint8_t* dest  = (uint8_t*) &__mutt_flash_run_start;
+
+	while (start != end) {
+		*dest++ = *start++;
+	}
+}
+
 typedef void (*fw_start_t)(void);
 
 fw_start_t fw_start = (fw_start_t) 0x10000;
@@ -26,9 +40,13 @@ int mutters_bl_init() {
 	char message [100] = { 0x0 };
 	uint32_t addr = 0x123480;
 	const MUTT_Flash_Sector_t* sect = NULL;
+	
+	copyRamFuncs();
 
 	sciInit();
-	MUTT_flash_init(150U);
+	snprintf(message, 100, "Start: 0x%p   End: 0x%p\n\r\n\r", &__mutt_flash_start, &__mutt_flash_end);
+	uart_send(message);
+	MUTT_flash_init(300U);
 
 	sect = MUTT_get_flash_sector(addr);
 	
