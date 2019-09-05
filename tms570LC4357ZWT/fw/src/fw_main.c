@@ -40,9 +40,8 @@ uint8_t dataBuffer[] = {
 
 int fw_main() {
 	uart_init();
-	while(1) {
-		uart_send((uint8_t*) "Hello from FW!!!\r\n");
+	uart_send((uint8_t*) "Hello from FW!!!\r\n");
 
-	}
+	while(1);
 }
 

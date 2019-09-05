@@ -10,6 +10,10 @@
 #define MUTT_BANK_6_NO_SECTORS (0)
 #define MUTT_BANK_7_NO_SECTORS (32)
 
+/* !!! ONLY FOR 16bit values !!! */
+#define MUTT_SET_BITS(X,A,B) \
+	X |= ((0xFFFFU >> (16 - A)) ^ (0xFFFFU >> (15 - B)))
+
 #define MUTT_FLASH_NO_SECTORS ((MUTT_BANK_0_NO_SECTORS) + \
 							   (MUTT_BANK_1_NO_SECTORS) + \
 							   (MUTT_BANK_2_NO_SECTORS) + \
@@ -52,8 +56,7 @@ typedef struct _MUTT_Flash_Sector_t {
  * @retval NULL 	If addr is invalid
  * @retval OTHER	Pointer to sector structure
  */
-const MUTT_Flash_Sector_t* MUTT_get_flash_sector(uint32_t addr) __attribute__ \
-		  ((section(".mutt_flash")));
+const MUTT_Flash_Sector_t* MUTT_get_flash_sector(uint32_t addr);
 
 /*
  * Function that initializes Flash driver and MUTT library
@@ -64,8 +67,7 @@ const MUTT_Flash_Sector_t* MUTT_get_flash_sector(uint32_t addr) __attribute__ \
  * @retval 0 		Initialization successful
  * @retval OTHER	Initialization failed
  */
-uint32_t MUTT_flash_init(uint32_t hclk_frequency) __attribute__ \
-			 ((section(".mutt_flash")));
+uint32_t MUTT_flash_init(uint32_t hclk_frequency);
 
 /*
  * Function that writes buffer from address buff and length len to address addr
@@ -78,7 +80,7 @@ uint32_t MUTT_flash_init(uint32_t hclk_frequency) __attribute__ \
  * @retval len		If write is successful and len bytes are written
  * @retval OTHER 	If write failed
  */
-uint32_t MUTT_flash_write(uint32_t addr, uint32_t len, uint32_t* buff);
+uint32_t MUTT_flash_write(uint32_t* addr, uint32_t len, uint8_t* buff);
 
 /*
  * Function that erases part of flash from address addr and len bytes

@@ -26,7 +26,9 @@ CFLAGS := --abi=eabi \
 		  --display_error_number \
 		  --quiet \
 		  --symdebug:dwarf \
-		  --obj_directory=build
+		  --obj_directory=build \
+		  -ppc \
+		  -ppa
 
 
 ASFLAGS := --quiet \
@@ -42,7 +44,7 @@ AS:=armcl
 CC:=armcl
 LD:=armlnk
 
-LD_LIBRARIES := rtsv7R4_T_be_v3D16_eabi.lib F021_API_CortexR4_BE_V3D16.lib
+LD_LIBRARIES := rtsv7R4_T_be_v3D16_eabi.lib F021_API_CortexR4_BE_L2FMC.lib
 LD_LIBRARIES := $(addprefix -l, $(LD_LIBRARIES))
 
 LD_LIBRARY_PATH := /opt/ti/arm/lib F021/
