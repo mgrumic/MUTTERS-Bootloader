@@ -397,7 +397,9 @@
       <HDRCRC>
         <NAME>HL_crc.h</NAME>
       </HDRCRC>
-      <SRCCRC/>
+      <SRCCRC>
+        <NAME>HL_crc.c</NAME>
+      </SRCCRC>
       <HDRETPWM_R>
         <NAME>HL_reg_etpwm.h</NAME>
       </HDRETPWM_R>
@@ -779,7 +781,7 @@
         <PATH>include\HL_crc.h</PATH>
       </HDRCRC>
       <SRCCRC>
-        <PATH/>
+        <PATH>source\HL_crc.c</PATH>
       </SRCCRC>
     </FILENAMES>
   </CRC>

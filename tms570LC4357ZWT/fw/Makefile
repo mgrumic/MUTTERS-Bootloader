@@ -40,13 +40,15 @@ LDFLAGS:=--reread_libs --rom_model --warn_sections --be32 --mapfile_contents=all
 AS:=armcl
 CC:=armcl
 LD:=armlnk
+HOST_CC:=gcc
+
 HEX_TOOL := armhex
 HEX2BIN := $(PWD)/hex2bin
 
 
 LD_LIBRARIES:=rtsv7R4_T_be_v3D16_eabi.lib
 LD_LIBRARIES:=$(addprefix -l, $(LD_LIBRARIES))
-LD_LIBRARY_PATH:= ../F021 /opt/ti/arm/lib
+LD_LIBRARY_PATH:=/opt/ti/arm/lib
 
 
 LD_LIBRARY_PATH:=$(addprefix -i,$(LD_LIBRARY_PATH))
@@ -74,15 +76,22 @@ OBJS:=$(subst $(SRC_DIR), build, $(OBJS))
 CINC:=$(addprefix -I, $(CINC))
 ASINC:=$(addprefix -I, $(ASINC))
 
+CRC := tools/crc
+
 FW:=build/fw.bin
 FW_HEX:=build/fw.b0
 ELF:=build/fw.out
 
 all: $(FW)
 
-$(FW): $(ELF)
+$(CRC): tools/crc.c
+	$(HOST_CC) -o $@ $<
+	
+
+$(FW): $(ELF) $(CRC)
 	$(HEX_TOOL) $(PWD)/fw/F021.cmd
 	$(HEX2BIN) $(FW_HEX)
+
 
 $(ELF): $(OBJS)
 	$(LD) $(LDFLAGS) $(LD_LIBRARY_PATH) $(LD_LIBRARIES) -lsrc/fw.ld -o $(ELF) $(OBJS) \

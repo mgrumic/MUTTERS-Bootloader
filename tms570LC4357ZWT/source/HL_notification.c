@@ -50,6 +50,7 @@
 
 #include "HL_esm.h"
 #include "HL_sci.h"
+#include "HL_crc.h"
 #include "HL_epc.h"
 #include "HL_sys_dma.h"
 
@@ -120,6 +121,15 @@ void sciNotification(sciBASE_t *sci, uint32 flags)
 /* USER CODE END */
 
 
+#pragma WEAK(crcNotification)
+void crcNotification(crcBASE_t *crc, uint32 flags)
+{
+/*  enter user code between the USER CODE BEGIN and USER CODE END. */
+/* USER CODE BEGIN (44) */
+/* USER CODE END */
+}
+/* USER CODE BEGIN (45) */
+/* USER CODE END */
 
 /* USER CODE BEGIN (46) */
 /* USER CODE END */
