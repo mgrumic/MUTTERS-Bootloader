@@ -2,7 +2,7 @@ TARGET_PLATFORM ?= tms570
 
 COMPILER_DIR := /opt/ti/arm
 
-CINC := include/ $(COMPILER_DIR)/include mutters/include F021/include
+CINC := include/ $(COMPILER_DIR)/include $(MUTT_FOLDER)/include F021/include
 
 ASINC := include/
 
@@ -55,13 +55,15 @@ BUILD_DIR:=build
 
 
 CSRC:=$(wildcard source/*.c)
-CSRC+=$(wildcard mutters/src/*.c)
+CSRC+=$(wildcard $(MUTT_FOLDER)/src/*.c)
+CSRC+=$(wildcard $(MUTT_FOLDER)/src/port_$(TARGET_PLATFORM)/*.c)
 ASMSRC:=$(wildcard source/*.asm)
 
 OBJS:=$(CSRC:.c=.obj)
 OBJS+=$(ASMSRC:.asm=.obj)
 OBJS:=$(subst source, build, $(OBJS))
-OBJS:=$(subst mutters/src, build, $(OBJS))
+OBJS:=$(subst $(MUTT_FOLDER)/src/port_$(TARGET_PLATFORM), build, $(OBJS))
+OBJS:=$(subst $(MUTT_FOLDER)/src, build, $(OBJS))
 
 .PHONY: all prebuild fw clean
 
@@ -83,7 +85,10 @@ $(OBJS): prebuild
 $(BUILD_DIR)/%.obj: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) $< $(CINC)
 
-$(BUILD_DIR)/%.obj: mutters/src/%.c
+$(BUILD_DIR)/%.obj: $(MUTT_FOLDER)/src/%.c
+	$(CC) $(CFLAGS) $< $(CINC)
+
+$(BUILD_DIR)/%.obj: $(MUTT_FOLDER)/src/port_$(TARGET_PLATFORM)/%.c
 	$(CC) $(CFLAGS) $< $(CINC)
 
 $(BUILD_DIR)/%.obj: $(SRC_DIR)/%.asm

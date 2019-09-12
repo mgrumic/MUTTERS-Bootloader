@@ -3,13 +3,28 @@
 #include <stdint.h>
 typedef uint64_t crc_t;
 
+#define LE32_TO_BE32(X) (((X & 0x000000FFU) << 24) | \
+						 ((X & 0x0000FF00U) <<  8) | \
+						 ((X & 0x00FF0000U) >>  8) | \
+						 ((X & 0xFF000000U) >> 24))
+
+#define LE64_TO_BE64(X) ( ((uint64_t)(X) << 32) | \
+			              (((uint64_t)(X) >> 32) & 0x00000000FFFFFFFFUL))
+
+
 crc_t crc_update_word(crc_t crc, crc_t data)
 
 {
 
-    int i, j;
+	int i, j;
 
     crc_t nextCrc = 0;
+	
+	// BE->LE magic
+	uint32_t* ptr = (uint32_t*)&data;
+
+	ptr[0] = LE32_TO_BE32(ptr[0]);
+	ptr[1] = LE32_TO_BE32(ptr[1]);
 
     // for i in 63 to 0 loop
 
@@ -154,15 +169,18 @@ int main(int argc, char** argv) {
 		return -E_OUT_FILE;
 	}
 
-	for (int i = 0; i < flen / 8; i++) {
+	for (int i = 0; i < (flen / 8); i++) {
 		crc = crc_update_word(crc, buffer[i]);
 	}
 
 	fprintf(stdout, "Calculated crc for file %s = 0x%08X%08X\n\n", argv[1], (uint32_t) crc, (uint32_t)(crc >> 32));
 
-	header.length = flen;
-	header.crc_l = (uint32_t) crc;
-	header.crc_h = (uint32_t) (crc >> 32);
+	header.length = LE32_TO_BE32(flen);
+	header.crc_h = (uint32_t) crc;
+	header.crc_l = (uint32_t) (crc >> 32);
+	
+	header.crc_l = LE32_TO_BE32(header.crc_l);
+	header.crc_h = LE32_TO_BE32(header.crc_h);
 
 	if (sizeof(firmware_header_t) != fwrite(&header, 1, sizeof(firmware_header_t), fout)) {
 		fprintf(stderr, "Cannot write header to output file\n\n");

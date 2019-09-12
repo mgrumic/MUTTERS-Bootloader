@@ -57,7 +57,7 @@ MEMORY
 {
 /* USER CODE BEGIN (2) */
 /* USER CODE END */
-    FLASH0  (RX) : origin=0x00010000 length=0x001EFFE0
+    FLASH0  (RX) : origin=0x00010020 length=0x001EFFE0
     FLASH1  (RX) : origin=0x00200000 length=0x00200000
     STACKS  (RW) : origin=0x08000000 length=0x00001500
     RAM     (RW) : origin=0x08001500 length=0x0007EB00
@@ -76,7 +76,7 @@ MEMORY
 SECTIONS
 {
 /* USER CODE BEGIN (5) */
-	.mutters_init	align(32) : {} > 0x10000
+	.mutters_init	align(32) : {} > 0x10020
 /* USER CODE END */
     .text   align(32) : {} > FLASH0
     .const  align(32) : {} > FLASH0

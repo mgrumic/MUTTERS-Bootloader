@@ -11,7 +11,7 @@ MUT_Error hal_uart_init() {
 	return MUT_NO_ERROR;
 }
 
-size_t strlen(uint8_t* str) {
+static size_t strlen(uint8_t* str) {
 	size_t ret = 0;
 	while (str[ret++] != '\0') {
 		if (ret > STRLEN_MAX) {

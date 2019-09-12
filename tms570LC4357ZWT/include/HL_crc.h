@@ -218,7 +218,7 @@ typedef struct crcModConfig
     uint32 mode;     /**< Mode of operation        */
     uint32 crc_channel;     /**< CRC channel-0,1       */
     uint64 * src_data_pat;  /**< Pattern data */
-    uint32 data_length;  /**< Pattern data length.Number of 64 bit size word*/
+    uint32 data_length;  /**< Pattern data length.Number of 64 bit size word */
 } crcModConfig_t;
 
 /** @struct crcConfig

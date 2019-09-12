@@ -76,7 +76,7 @@ OBJS:=$(subst $(SRC_DIR), build, $(OBJS))
 CINC:=$(addprefix -I, $(CINC))
 ASINC:=$(addprefix -I, $(ASINC))
 
-CRC := tools/crc
+PACK_DELIVERY := tools/pack_delivery
 
 FW:=build/fw.bin
 FW_HEX:=build/fw.b0
@@ -84,13 +84,15 @@ ELF:=build/fw.out
 
 all: $(FW)
 
-$(CRC): tools/crc.c
+$(PACK_DELIVERY): tools/pack_delivery.c
 	$(HOST_CC) -o $@ $<
 	
 
-$(FW): $(ELF) $(CRC)
+$(FW): $(ELF) $(PACK_DELIVERY)
 	$(HEX_TOOL) $(PWD)/fw/F021.cmd
 	$(HEX2BIN) $(FW_HEX)
+	$(PACK_DELIVERY) $(FW) $(FW).delivery
+
 
 
 $(ELF): $(OBJS)
