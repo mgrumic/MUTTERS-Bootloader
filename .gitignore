@@ -1,6 +1,6 @@
 # Custom
 smc2_linker/
-
+*.pp
 # Eclipse
 *.project
 *.cproject
